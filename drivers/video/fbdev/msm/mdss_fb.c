@@ -101,6 +101,12 @@ static struct workqueue_struct *asus_lcd_early_unblank_wq;
 extern int g_resume_from_fp;
 #endif
 
+#define MDSS_BRIGHT_TO_BL_DIM(out, v) do {\
+			out = (12*v*v+1393*v+3060)/4465;\
+			} while (0)
+bool backlight_dimmer = false;
+module_param(backlight_dimmer, bool, 0644);
+
 static struct fb_info *fbi_list[MAX_FBI_LIST];
 static int fbi_list_index;
 
