@@ -241,12 +241,6 @@ static struct attribute *attrs[] = {
 	NULL,
 };
 #define MODULE_INITIALIZED 1
-
-#ifdef MULTI_IF_NAME
-#define WLAN_LOADER_NAME "boot_" MULTI_IF_NAME
-#else
-#define WLAN_LOADER_NAME "boot_wlan"
-#endif
 #endif
 
 /* the Android framework expects this param even though we don't use it */
