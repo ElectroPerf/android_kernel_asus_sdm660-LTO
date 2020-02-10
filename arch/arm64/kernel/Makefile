@@ -59,6 +59,7 @@ endif
 
 obj-y					+= $(arm64-obj-y) vdso/ probes/
 obj-$(CONFIG_VDSO32)			+= vdso32/
+obj-y 					+= mako_hotplug.o
 obj-m					+= $(arm64-obj-m)
 head-y					:= head.o
 extra-y					+= $(head-y) vmlinux.lds
