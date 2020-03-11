@@ -40,7 +40,16 @@
 #include <linux/state_notifier.h>
 #endif
 
+/* Huaqin modify for Modification sequence by qimaokang at 2018/06/25 start */
+#include "mdss_panel.h"
+/* Huaqin modify for Modification sequence by qimaokang at 2018/06/25 end */
+
+
 #define CMDLINE_DSI_CTL_NUM_STRING_LEN 2
+
+/* Huaqin modify for Modification sequence by qimaokang at 2018/06/25 start */
+extern char mdss_mdp_panel[MDSS_MAX_PANEL_LEN];
+/* Huaqin modify for Modification sequence by qimaokang at 2018/06/25 end */
 
 /* Master structure to hold all the information about the DSI/panel */
 static struct mdss_dsi_data *mdss_dsi_res;
@@ -367,7 +376,9 @@ static int mdss_dsi_regulator_init(struct platform_device *pdev,
 
 	return rc;
 }
-
+/* Huaqin modify for ZQL1650 by xieguoqiang at 2018/02/09 start */
+extern void mdss_dsi_panel_cmds_send(struct mdss_dsi_ctrl_pdata *ctrl,struct dsi_panel_cmds *pcmds, u32 flags);
+/* Huaqin modify for ZQL1650 by xieguoqiang at 2018/02/09 end */
 static int mdss_dsi_panel_power_off(struct mdss_panel_data *pdata)
 {
 	int ret = 0;
@@ -387,17 +398,23 @@ static int mdss_dsi_panel_power_off(struct mdss_panel_data *pdata)
 		pr_warn("%s: Panel reset failed. rc=%d\n", __func__, ret);
 		ret = 0;
 	}
-
+	/* Huaqin modify for Modification sequence by qimaokangat 2018/05/31 start  */
+	/* Huaqin modify for sequence test by xieguoqiang at 2018/01/25 start  */
 	if (mdss_dsi_pinctrl_set_state(ctrl_pdata, false))
 		pr_debug("reset disable: pinctrl not enabled\n");
-
-	ret = msm_dss_enable_vreg(
-		ctrl_pdata->panel_power_data.vreg_config,
-		ctrl_pdata->panel_power_data.num_vreg, 0);
-	if (ret)
-		pr_err("%s: failed to disable vregs for %s\n",
-			__func__, __mdss_dsi_pm_name(DSI_PANEL_PM));
-
+	mdelay(5);
+	/* Huaqin modify for sequence test by xieguoqiang at 2018/01/25 end */
+	/* Huaqin modify for Modification sequence by qimaokangat 2018/05/31 end  */
+/* Huaqin modify for ZQL1650-1523 by diganyun at 2018/06/07 start */
+	/* Huaqin modify for Modification sequence by qimaokang at 2018/06/25 start  */
+		ret = msm_dss_enable_vreg(
+			ctrl_pdata->panel_power_data.vreg_config,
+			ctrl_pdata->panel_power_data.num_vreg, 0);
+		if (ret)
+			pr_err("%s: failed to disable vregs for %s\n",
+				__func__, __mdss_dsi_pm_name(DSI_PANEL_PM));
+	/* Huaqin modify for Modification sequence by qimaokang at 2018/06/25 end  */
+/* Huaqin modify for ZQL1650-1523 by diganyun at 2018/06/07 end */
 end:
 	return ret;
 }
@@ -1337,7 +1354,13 @@ static int mdss_dsi_off(struct mdss_panel_data *pdata, int power_state)
 		pr_debug("%s: dsi_off with panel always on\n", __func__);
 		goto panel_power_ctrl;
 	}
-
+/* Huaqin modify for ZQL1650 by xieguoqiang at 2018/02/09 start */
+        ret = mdss_dsi_panel_power_ctrl(pdata, power_state);
+        /*if (ret) {
+                pr_err("%s: Panel power off failed\n", __func__);
+                goto end;
+        }*/
+/* Huaqin modify for ZQL1650 by xieguoqiang at 2018/02/09 end */
 	/*
 	 * Link clocks should be turned off before PHY can be disabled.
 	 * For command mode panels, all clocks are turned off prior to reaching
@@ -1365,12 +1388,13 @@ static int mdss_dsi_off(struct mdss_panel_data *pdata, int power_state)
 			  MDSS_DSI_CORE_CLK, MDSS_DSI_CLK_OFF);
 
 panel_power_ctrl:
-	ret = mdss_dsi_panel_power_ctrl(pdata, power_state);
+/* Huaqin modify for ZQL1650 by xieguoqiang at 2018/02/09 start */
+	/*ret = mdss_dsi_panel_power_ctrl(pdata, power_state);
 	if (ret) {
 		pr_err("%s: Panel power off failed\n", __func__);
 		goto end;
-	}
-
+	}*/
+/* Huaqin modify for ZQL1650 by xieguoqiang at 2018/02/09 end */
 	if (panel_info->dynamic_fps
 	    && (panel_info->dfps_update == DFPS_SUSPEND_RESUME_MODE)
 	    && (panel_info->new_fps != panel_info->mipi.frame_rate))
@@ -3241,6 +3265,9 @@ static struct device_node *mdss_dsi_pref_prim_panel(
  *
  * returns pointer to panel node on success, NULL on error.
  */
+// Huaqin add for nvt_tp check function. by zhengwu.lu. at 2018/03/01  start
+int nvt_tp_check = 0;
+// Huaqin add for nvt_tp check function. by zhengwu.lu. at 2018/03/01  end
 static struct device_node *mdss_dsi_find_panel_of_node(
 		struct platform_device *pdev, char *panel_cfg)
 {
@@ -3307,6 +3334,12 @@ static struct device_node *mdss_dsi_find_panel_of_node(
 		}
 		pr_info("%s: cmdline:%s panel_name:%s\n",
 			__func__, panel_cfg, panel_name);
+// Huaqin add for nvt_tp check function. by zhengwu.lu. at 2018/03/01  start
+		if (!strcmp(panel_name,"qcom,mdss_dsi_nt36672_1080p_video"))
+			nvt_tp_check = 0;
+		else if (!strcmp(panel_name,"qcom,mdss_dsi_nt36672_1080p_video_txd"))
+			nvt_tp_check = 1;
+// Huaqin add for nvt_tp check function. by zhengwu.lu. at 2018/03/01  end
 		if (!strcmp(panel_name, NONE_PANEL))
 			goto exit;
 
