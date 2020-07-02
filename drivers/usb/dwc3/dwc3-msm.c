@@ -2260,6 +2260,7 @@ static int dwc3_msm_resume(struct dwc3_msm *mdwc)
 		mutex_unlock(&mdwc->suspend_resume_mutex);
 		return 0;
 	}
+	pm_stay_awake(mdwc->dev);
 
 	pm_stay_awake(mdwc->dev);
 
