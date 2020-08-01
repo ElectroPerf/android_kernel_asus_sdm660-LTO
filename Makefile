@@ -677,6 +677,14 @@ KBUILD_CFLAGS += $(call cc-ifversion, -gt, 0900, \
 KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0409, \
 			$(call cc-disable-warning,maybe-uninitialized,))
 
+ifeq ($(cc-name),clang)
+KBUILD_CFLAGS   += -mcpu=cortex-a53 -mtune=cortex-a53
+endif
+
+ifeq ($(cc-name),gcc)
+KBUILD_CFLAGS   += -mcpu=cortex-a73.cortex-a53 -mtune=cortex-a73.cortex-a53
+endif
+
 # Tell gcc to never replace conditional load with a non-conditional one
 KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
 KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
