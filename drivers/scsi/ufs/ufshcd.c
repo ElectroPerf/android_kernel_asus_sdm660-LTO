@@ -9464,6 +9464,8 @@ ufshcd_init_latency_hist(struct ufs_hba *hba)
 	if (device_create_file(hba->dev, &dev_attr_latency_hist))
 		dev_err(hba->dev, "Failed to create latency_hist sysfs entry\n");
 }
+=======
+>>>>>>> a444358f6b009e2a7dbbf3e2cd189fe0192eea14
 
 static void
 ufshcd_exit_latency_hist(struct ufs_hba *hba)
