@@ -7226,9 +7226,18 @@ boosted_task_util(struct task_struct *task)
 	unsigned long util = task_util(task);
 	long margin = schedtune_task_margin(task);
 
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	unsigned long util = task_util(task);
+	unsigned long util_min = uclamp_eff_value(task, UCLAMP_MIN);
+	unsigned long util_max = uclamp_eff_value(task, UCLAMP_MAX);
+
+	return clamp(util, util_min, util_max);
+#else
+
 	trace_sched_boost_task(task, util, margin);
 
 	return util + margin;
+#endif
 }
 
 static unsigned long capacity_spare_wake(int cpu, struct task_struct *p)
@@ -7637,6 +7646,10 @@ static inline int find_best_target(struct task_struct *p, int *backup_cpu,
 				continue;
 
 			if (walt_cpu_high_irqload(i))
+				continue;
+
+			/* Skip CPUs which do not fit task requirements */
+			if (capacity_of(i) < boosted_task_util(p))
 				continue;
 
 			/*
