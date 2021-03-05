@@ -1835,6 +1835,7 @@ out_unlock:
 	static struct uc_target uc_targets[] = {
 		{ "top-app",		"20", "max",	1, 1 },
 		{ "foreground",		"20", "50",	0, 0 },
+		{ "restricted",		"10", "40",	0, 0 },
 		{ "background",		"20", "max",	0, 0 },
 		{ "system-background",	"10", "50",	0, 0 },
 	};
