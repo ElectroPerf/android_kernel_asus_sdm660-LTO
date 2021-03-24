@@ -47,7 +47,7 @@ DEFCONFIG=electroperf_defconfig
 # Show manufacturer info
 MANUFACTURERINFO="ASUSTek Computer Inc."
 
-# Specify compiler. 
+# Specify compiler.
 # 'clang' or 'gcc'
 COMPILER=clang
 	if [ $COMPILER = "clang" ]
@@ -146,7 +146,7 @@ exports() {
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="ElectroPerf-4.4.262-P-WIFI-X01BD-LA.UM.9.2.r1-02700-SDMxx0.0-$DATE"
+    KERNELNAME="ElectroPerf-4.4.263-P-WIFI-X01BD-LA.UM.9.2.r1-02700-SDMxx0.0-$DATE"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
@@ -173,7 +173,7 @@ build_kernel() {
 	fi
 
 	BUILD_START=$(date +"%s")
-	
+
 	if [ $COMPILER = "clang" ]
 	then
 		make -j"$PROCS" O=out \
@@ -194,7 +194,7 @@ build_kernel() {
 	BUILD_END=$(date +"%s")
 	DIFF=$((BUILD_END - BUILD_START))
 
-	if [ -f "$KERNEL_DIR"/out/arch/arm64/boot/Image.gz-dtb ] 
+	if [ -f "$KERNEL_DIR"/out/arch/arm64/boot/Image.gz-dtb ]
 	then
 		msg "|| Kernel successfully compiled ||"
 	elif ! [ -f $KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb ]
@@ -220,8 +220,17 @@ gen_zip() {
 		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
 	fi
 	cd AnyKernel3 || exit
-	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel $KName/g" init.spectrum.rc
+	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-LA.UM.9.2.r1-02700-SDMxx0.0/g" init.spectrum.rc
         cp -af anykernel-real.sh anykernel.sh
+	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-LA.UM.9.2.r1-02700-SDMxx0.0/g" anykernel.sh
+	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
+	sed -i "s/kernel.compiler=.*/kernel.compiler=Proton-v13/g" anykernel.sh
+	sed -i "s/kernel.made=.*/kernel.made=Kunmun @ElectroPerf/g" anykernel.sh
+	sed -i "s/kernel.version=.*/kernel.version=4.4.263/g" anykernel.sh
+	sed -i "s/message.word=.*/message.word=Appreciate your efforts for choosing ElectroPerf kernel./g" anykernel.sh
+	sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
+
+
 	zip -r9 "$ZIPNAME" * -x .git README.md anykernel-real.sh .gitignore *.zip
 
 	## Prepare a final zip variable
