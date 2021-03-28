@@ -81,13 +81,13 @@ LOG_DEBUG=0
 # set KBUILD_BUILD_VERSION and KBUILD_BUILD_HOST and CI_BRANCH
 
 #Check Kernel Version
-KERVER=$(make kernelversion)
+LINUXVER=$(make kernelversion)
 
 # Set a commit head
 COMMIT_HEAD=$(git log --oneline -1)
 
 # Set Date
-DATE=$(TZ=Asia/Kolkata date +"%Y%m%d")
+DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 
 #Now Its time for other stuffs like cloning, exporting, etc
 
@@ -146,7 +146,7 @@ exports() {
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="ElectroPerf-4.4.263-P-WIFI-X01BD-LA.UM.9.2.r1-02700-SDMxx0.0-$DATE"
+    KERNELNAME="ElectroPerf-$LINUXVER-P-WIFI-CAF-STABLE-X01BD-v1.1-$DATE"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
@@ -220,13 +220,13 @@ gen_zip() {
 		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
 	fi
 	cd AnyKernel3 || exit
-	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-LA.UM.9.2.r1-02700-SDMxx0.0/g" init.spectrum.rc
+	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-P-WIFI-CAF-STABLE-v1.1/g" init.spectrum.rc
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
 	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
-	sed -i "s/kernel.compiler=.*/kernel.compiler=Proton-v13/g" anykernel.sh
+	sed -i "s/kernel.compiler=.*/kernel.compiler=PROTON/g" anykernel.sh
 	sed -i "s/kernel.made=.*/kernel.made=Kunmun @ElectroPerf/g" anykernel.sh
-	sed -i "s/kernel.version=.*/kernel.version=4.4.263/g" anykernel.sh
+	sed -i "s/kernel.version=.*/kernel.version=$LINUXVER/g" anykernel.sh
 	sed -i "s/message.word=.*/message.word=Appreciate your efforts for choosing ElectroPerf kernel./g" anykernel.sh
 	sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
 
