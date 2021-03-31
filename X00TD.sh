@@ -220,7 +220,7 @@ gen_zip() {
 		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
 	fi
 	cd AnyKernel3 || exit
-	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-P-WIFI-CAF-STABLE-v1.0/g" init.spectrum.rc
+	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-v1.0-P-WIFI-CAF-STABLE/g" init.spectrum.rc
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
 	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
