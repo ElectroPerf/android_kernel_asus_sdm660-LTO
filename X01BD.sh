@@ -96,7 +96,7 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 	if [ $COMPILER = "clang" ]
 	then
 		msg "|| Cloning toolchain ||"
-		git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
+		git clone --depth=1 https://github.com/mvaisakh/gcc-arm64 clang
 
 		# Toolchain Directory defaults to clang-llvm
 		TC_DIR=$KERNEL_DIR/clang
@@ -146,7 +146,7 @@ exports() {
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="ElectroPerf-$LINUXVER-P-WIFI-CAF-STABLE-X01BD-v1.1-$DATE"
+    KERNELNAME="ElectroPerf-4.4.264-P-WIFI-CAF-STABLE-X01BD-v1.1-$DATE"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
@@ -224,9 +224,9 @@ gen_zip() {
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
 	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
-	sed -i "s/kernel.compiler=.*/kernel.compiler=PROTON/g" anykernel.sh
+	sed -i "s/kernel.compiler=.*/kernel.compiler=EVA-GCC/g" anykernel.sh
 	sed -i "s/kernel.made=.*/kernel.made=Kunmun @ElectroPerf/g" anykernel.sh
-	sed -i "s/kernel.version=.*/kernel.version=$LINUXVER/g" anykernel.sh
+	sed -i "s/kernel.version=.*/kernel.version=4.4.264/g" anykernel.sh
 	sed -i "s/message.word=.*/message.word=Appreciate your efforts for choosing ElectroPerf kernel./g" anykernel.sh
 	sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
 
