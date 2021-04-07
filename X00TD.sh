@@ -146,7 +146,7 @@ exports() {
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="ElectroPerf-4.4.264-P-WIFI-CAF-STABLE-X00TD-v1.0-$DATE"
+    KERNELNAME="ElectroPerf-4.4.265-P-WIFI-CAF-STABLE-X00TD-v1.0-$DATE"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
@@ -226,7 +226,7 @@ gen_zip() {
 	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
 	sed -i "s/kernel.compiler=.*/kernel.compiler=PROTON/g" anykernel.sh
 	sed -i "s/kernel.made=.*/kernel.made=Kunmun @ElectroPerf/g" anykernel.sh
-	sed -i "s/kernel.version=.*/kernel.version=4.4.264/g" anykernel.sh
+	sed -i "s/kernel.version=.*/kernel.version=4.4.265/g" anykernel.sh
 	sed -i "s/message.word=.*/message.word=Appreciate your efforts for choosing ElectroPerf kernel./g" anykernel.sh
 	sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
 
