@@ -96,7 +96,7 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 	if [ $COMPILER = "clang" ]
 	then
 		msg "|| Cloning toolchain ||"
-		git clone --depth=1 https://github.com/mvaisakh/gcc-arm64 clang
+		git clone --depth=1 https://github.com/kdrag0n/proton-clang.git -b master clang
 
 		# Toolchain Directory defaults to clang-llvm
 		TC_DIR=$KERNEL_DIR/clang
@@ -224,7 +224,7 @@ gen_zip() {
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
 	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
-	sed -i "s/kernel.compiler=.*/kernel.compiler=EVA-GCC/g" anykernel.sh
+	sed -i "s/kernel.compiler=.*/kernel.compiler=Proton-13/g" anykernel.sh
 	sed -i "s/kernel.made=.*/kernel.made=Kunmun @ElectroPerf/g" anykernel.sh
 	sed -i "s/kernel.version=.*/kernel.version=4.4.265/g" anykernel.sh
 	sed -i "s/message.word=.*/message.word=Appreciate your efforts for choosing ElectroPerf kernel./g" anykernel.sh
