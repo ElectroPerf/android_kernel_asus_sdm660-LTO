@@ -385,20 +385,19 @@ LINUXINCLUDE    := \
 		-Iinclude \
 		$(USERINCLUDE)
 
-KBUILD_CPPFLAGS := -D__KERNEL__
-
+KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
-		   -std=gnu89 $(call cc-option,-fno-PIE)
+		   -std=gnu89
 
 ifeq ($(TARGET_BOARD_TYPE),auto)
 KBUILD_CFLAGS    += -DCONFIG_PLATFORM_AUTO
 endif
+KBUILD_CPPFLAGS := -D__KERNEL__
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
-KBUILD_AFLAGS   := -D__ASSEMBLY__ $(call cc-option,-fno-PIE)
 KBUILD_AFLAGS_MODULE  := -DMODULE
 KBUILD_CFLAGS_MODULE  := -DMODULE
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
@@ -609,6 +608,9 @@ endif # $(dot-config)
 # This allow a user to issue only 'make' to build a kernel including modules
 # Defaults to vmlinux, but the arch makefile usually adds further targets
 all: vmlinux
+
+KBUILD_CFLAGS	+= $(call cc-option,-fno-PIE)
+KBUILD_AFLAGS	+= $(call cc-option,-fno-PIE)
 
 ifeq ($(cc-name),clang)
 ifneq ($(CROSS_COMPILE),)
