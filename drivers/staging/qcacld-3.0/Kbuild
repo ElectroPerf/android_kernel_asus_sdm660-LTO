@@ -3304,6 +3304,10 @@ endif
 endif
 ccflags-y += -Wmissing-prototypes
 
+# optimise for size
+subdir-ccflags-y += $(call cc-option, -g0)
+subdir-ccflags-y += $(call cc-option, -Os)
+
 ifeq ($(call cc-option-yn, -Wheader-guard), y)
 ccflags-y += -Wheader-guard
 endif
