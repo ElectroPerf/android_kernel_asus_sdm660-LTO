@@ -1,12 +1,5 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 
-&soc {
-	tlmm {
-		/delete-node/ ufs_dev_reset_assert;
-		/delete-node/ ufs_dev_reset_deassert;
-	};
-};
-
 &spkr_1_sd_n_sleep {
 	mux {
 		pins = "gpio70";
