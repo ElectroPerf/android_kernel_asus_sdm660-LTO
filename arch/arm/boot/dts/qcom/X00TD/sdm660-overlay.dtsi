@@ -51,12 +51,6 @@
 		qcom,allocate-boot-time;
 };
 
-&ufs1 {
-	/delete-property/ pinctrl-names;
-	/delete-property/ pinctrl-0;
-	/delete-property/ pinctrl-1;
-};
-
 &soc {
 	gpio_keys {
 		/delete-node/ camera_focus;
