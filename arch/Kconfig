@@ -497,6 +497,12 @@ config LTO_CLANG
           5.0 (make CC=clang) and GNU gold from binutils >= 2.27, and have the
           LLVMgold plug-in in LD_LIBRARY_PATH.
 
+
+config LTO_GCC
+	bool "Enable Link Time Optimization for GCC"
+	select LTO
+	select THIN_ARCHIVES
+
 endchoice
 
 config HAVE_ARCH_WITHIN_STACK_FRAMES
