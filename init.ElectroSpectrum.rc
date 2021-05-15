@@ -102,14 +102,14 @@ on property:persist.spectrum.profile=2
     write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 160000000
     write /sys/class/kgsl/kgsl-3d0/max_clock_mhz 370
     write /sys/class/kgsl/kgsl-3d0/min_clock_mhz 160
-    write /sys/class/kgsl/kgsl-3d0/devfreq/governor "powersave"
+    write /sys/class/kgsl/kgsl-3d0/devfreq/governor "msm-adreno-tz"
     write /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost 0
     write /sys/class/kgsl/kgsl-3d0/throttling 1
 	## Vibration Strength
 	write /sys/class/timed_output/vibrator/vtg_level 1700
     write /sys/class/leds/vibrator/vmax_mv 1700
     ## I/O Scheduler
-    write /sys/block/mmcblk0/queue/scheduler row
+    write /sys/block/mmcblk0/queue/scheduler anxiety
     #thermal
     chmod 0644 /sys/module/msm_thermal/core_control/enabled
     chown system system /sys/module/msm_thermal/core_control/enabled
