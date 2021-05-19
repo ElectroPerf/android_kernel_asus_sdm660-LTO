@@ -610,7 +610,7 @@ CONFIG_CPU_IDLE_GOV_MENU=y
 # LTO FLAGS
 #
 # CONFIG_THINLTO is not set
-CONFIG_LTO_CLANG=y
+# CONFIG_LTO_CLANG is not set
 
 # ARM CPU Idle Drivers
 #
