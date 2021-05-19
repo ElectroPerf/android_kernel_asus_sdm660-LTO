@@ -72,6 +72,15 @@ BUILD_DTBO=0
 # Sign the zipfile
 # 1 is YES | 0 is NO
 SIGN=0
+	if [ $SIGN = 1 ]
+	then
+		#Check for java
+		if command -v java > /dev/null 2>&1; then
+			SIGN=1
+		else
+			SIGN=0
+		fi
+	fi
 
 # Debug purpose. Send logs on every successfull builds
 # 1 is YES | 0 is NO(default)
@@ -169,7 +178,7 @@ exports() {
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="ElectroPerf-$LINUXVER-P-WIFI-CAF-STABLE-X00TD-v2.1-$DATE"
+    KERNELNAME="ElectroPerf-$LINUXVER-LTO-P-WIFI-X00TD-v2.1-$DATE"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
@@ -278,6 +287,20 @@ gen_zip() {
 
 	## Prepare a final zip variable
 	ZIP_FINAL="$ZIPNAME"
+
+
+	if [ $SIGN = 1 ]
+	then
+		## Sign the zip before sending it to telegram
+		if [ "$PTTG" = 1 ]
+ 		then
+ 			msg "|| Signing Zip ||"
+			tg_post_msg "<code>Signing Zip file with AOSP keys..</code>"
+ 		fi
+		curl -sLo zipsigner-4.0.jar https://github.com/baalajimaestro/AnyKernel3/raw/master/zipsigner-4.0.jar
+		java -jar zipsigner-4.0.jar "$KERNELNAME".zip "$KERNELNAME"-signed.zip
+		ZIP_FINAL="$ZIP_FINAL-signed"
+	fi
 
 	cd ..
 }
