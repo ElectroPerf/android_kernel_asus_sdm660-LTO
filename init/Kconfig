@@ -1459,6 +1459,14 @@ config CC_OPTIMIZE_FOR_SIZE
 
 endchoice
 
+config GRAPHITE
+	bool "Enable Graphite"
+	depends on LTO
+	help
+	  This enables GCC Graphite.
+
+	  If unsure, say N.
+
 config SYSCTL
 	bool
 
