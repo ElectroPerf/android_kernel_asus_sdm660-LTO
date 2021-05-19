@@ -48,13 +48,16 @@ DEFCONFIG=electroperf_defconfig
 MANUFACTURERINFO="ASUSTek Computer Inc."
 
 # Specify compiler.
-# 'clang' or 'gcc'
-COMPILER=clang
-	if [ $COMPILER = "clang" ]
+# 'clang' or 'clangxgcc' or 'gcc'
+COMPILER=clangxgcc
+	if [ $COMPILER = "clang" ] || [ $COMPILER = "clangxgcc" ]
 	then
 		# install few necessary packages
-		sudo apt-get -y install llvm lld
+		sudo apt-get -y install gcc llvm lld g++-multilib clang
 	fi
+
+# Kernel is LTO
+LTO=1
 
 # Clean source prior building. 1 is NO(default) | 0 is YES
 INCREMENTAL=1
@@ -98,16 +101,27 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 		msg "|| Cloning toolchain ||"
 		git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
 
-		# Toolchain Directory defaults to clang-llvm
-		TC_DIR=$KERNEL_DIR/clang
 	elif [ $COMPILER = "gcc" ]
 	then
 		msg "|| Cloning GCC ||"
-		git clone https://github.com/najahiiii/aarch64-linux-gnu.git -b linaro8-20190402 --depth=1 gcc64
-		git clone https://github.com/innfinite4evr/android-prebuilts-gcc-linux-x86-arm-arm-eabi-7.2.git -b master --depth=1 gcc32
+		git clone https://github.com/mvaisakh/gcc-arm64.git gcc64 --depth=1
+                git clone https://github.com/mvaisakh/gcc-arm.git gcc32 --depth=1
+	elif [ $COMPILER = "clangxgcc" ]
+	then
+		msg "|| Cloning toolchain ||"
+		git clone --depth=1 https://github.com/kdrag0n/proton-clang -b master clang
+
+		msg "|| Cloning GCC ||"
+		git clone https://github.com/mvaisakh/gcc-arm64.git gcc64 --depth=1
+		git clone https://github.com/mvaisakh/gcc-arm.git gcc32 --depth=1
+	fi
+
+	# Toolchain Directory defaults to clang-llvm
+		TC_DIR=$KERNEL_DIR/clang
+
+	# GCC Directory
 		GCC64_DIR=$KERNEL_DIR/gcc64
 		GCC32_DIR=$KERNEL_DIR/gcc32
-	fi
 
 	msg "|| Cloning Anykernel ||"
         git clone https://github.com/ElectroPerf/AnyKernel3.git -b ElectroPerf-P-Wifi
@@ -130,10 +144,19 @@ exports() {
 	then
 		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 		PATH=$TC_DIR/bin/:$PATH
+	elif [ $COMPILER = "clangxgcc" ]
+	then
+		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+		PATH=$TC_DIR/bin:$GCC64_DIR/bin:$GCC32_DIR/bin:/usr/bin:$PATH
 	elif [ $COMPILER = "gcc" ]
 	then
-		KBUILD_COMPILER_STRING="Linaro GCC 8.3-2019.03~dev"
+		KBUILD_COMPILER_STRING=$("$GCC64_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
 		PATH=$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH
+	fi
+
+	if [ $LTO = "1" ];then
+		export LD=ld.lld
+        export LD_LIBRARY_PATH=$TC_DIR/lib
 	fi
 
 	export PATH KBUILD_COMPILER_STRING
@@ -183,12 +206,32 @@ build_kernel() {
 				AR=llvm-ar \
 				OBJDUMP=llvm-objdump \
 				STRIP=llvm-strip
-	fi
-
-	if [ $COMPILER = "gcc" ]
+	elif [ $COMPILER = "gcc" ]
 	then
-		export CROSS_COMPILE_ARM32=$GCC32_DIR/bin/arm-eabi-
-		make -j"$PROCS" O=out CROSS_COMPILE=aarch64-linux-gnu-
+		make -j"$PROCS" O=out \
+				CROSS_COMPILE_ARM32=arm-eabi- \
+				CROSS_COMPILE=aarch64-elf- \
+				AR=aarch64-elf-ar \
+				OBJDUMP=aarch64-elf-objdump \
+				STRIP=aarch64-elf-strip
+	elif [ $COMPILER = "clangxgcc" ]
+	then
+		make -j"$PROCS"  O=out \
+					CC=clang \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+					CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+					AR=llvm-ar \
+					AS=llvm-as \
+					NM=llvm-nm \
+					STRIP=llvm-strip \
+					OBJCOPY=llvm-objcopy \
+					OBJDUMP=llvm-objdump \
+					OBJSIZE=llvm-size \
+					READELF=llvm-readelf \
+					HOSTCC=clang \
+					HOSTCXX=clang++ \
+					HOSTAR=llvm-ar \
+					CLANG_TRIPLE=aarch64-linux-gnu-
 	fi
 
 	BUILD_END=$(date +"%s")
