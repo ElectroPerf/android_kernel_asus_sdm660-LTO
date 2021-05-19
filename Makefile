@@ -665,6 +665,9 @@ endif
 ifdef CONFIG_LTO_GCC
 LTO_CFLAGS		:= -flto -flto=jobserver -fno-fat-lto-objects \
 				-fuse-linker-plugin -fwhole-program
+ifdef CONFIG_GRAPHITE
+LTO_CFLAGS    += -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block -ftree-vectorize
+endif
 KBUILD_CFLAGS	+= $(LTO_CFLAGS)
 LTO_LDFLAGS		:= $(LTO_CFLAGS) -Wno-lto-type-mismatch -Wno-psabi \
 				-Wno-stringop-overflow -flinker-output=nolto-rel
