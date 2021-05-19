@@ -49,7 +49,7 @@ MANUFACTURERINFO="ASUSTek Computer Inc."
 
 # Specify compiler.
 # 'clang' or 'clangxgcc' or 'gcc'
-COMPILER=clangxgcc
+COMPILER=gcc
 	if [ $COMPILER = "clang" ] || [ $COMPILER = "clangxgcc" ]
 	then
 		# install few necessary packages
@@ -267,7 +267,7 @@ gen_zip() {
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
 	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
-	sed -i "s/kernel.compiler=.*/kernel.compiler=PROTON/g" anykernel.sh
+	sed -i "s/kernel.compiler=.*/kernel.compiler=EVA-GCC/g" anykernel.sh
 	sed -i "s/kernel.made=.*/kernel.made=Kunmun @ElectroPerf/g" anykernel.sh
 	sed -i "s/kernel.version=.*/kernel.version=$LINUXVER/g" anykernel.sh
 	sed -i "s/message.word=.*/message.word=Appreciate your efforts for choosing ElectroPerf kernel./g" anykernel.sh
