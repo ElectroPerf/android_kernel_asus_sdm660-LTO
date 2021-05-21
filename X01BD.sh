@@ -71,7 +71,7 @@ BUILD_DTBO=0
 
 # Sign the zipfile
 # 1 is YES | 0 is NO
-SIGN=0
+SIGN=1
 	if [ $SIGN = 1 ]
 	then
 		#Check for java
@@ -297,8 +297,7 @@ gen_zip() {
  			msg "|| Signing Zip ||"
 			tg_post_msg "<code>Signing Zip file with AOSP keys..</code>"
  		fi
-		curl -sLo zipsigner-4.0.jar https://github.com/baalajimaestro/AnyKernel3/raw/master/zipsigner-4.0.jar
-		java -jar zipsigner-4.0.jar "$KERNELNAME".zip "$KERNELNAME"-signed.zip
+		java -jar zipsigner-3.0.jar "$KERNELNAME".zip "$KERNELNAME"-signed.zip
 		ZIP_FINAL="$ZIP_FINAL-signed"
 	fi
 
