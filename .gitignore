@@ -18,6 +18,10 @@
 *.so
 *.so.dbg
 *.mod.c
+clang
+gcc*
+out
+Any*
 *.i
 *.lst
 *.symtypes
