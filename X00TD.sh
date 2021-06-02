@@ -57,7 +57,7 @@ DEFCONFIG=electroperf_defconfig
 MANUFACTURERINFO="ASUSTek Computer Inc."
 
 # Kernel Variant
-VARIANT=P-WIFI
+VARIANT=R-WIFI
 
 # Build Type
 BUILD_TYPE="TEST: Might be unstable so use at your own risk"
@@ -190,7 +190,7 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 		AK_DIR=$KERNEL_DIR/Anykernel3
 
 	msg "|| Cloning Anykernel ||"
-	git clone https://github.com/ElectroPerf/AnyKernel3-X00TD.git -b ElectroPerf-P-Wifi $KERNEL_DIR/Anykernel3
+	git clone https://github.com/ElectroPerf/AnyKernel3-X00TD.git -b ElectroPerf-R-Wifi $KERNEL_DIR/Anykernel3
 
 	if [ $BUILD_DTBO = 1 ]
 	then
