@@ -133,7 +133,7 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 		GCC32_DIR=$KERNEL_DIR/gcc32
 
 	msg "|| Cloning Anykernel ||"
-        git clone https://github.com/ElectroPerf/AnyKernel3.git -b ElectroPerf-P-Wifi
+        git clone https://github.com/ElectroPerf/AnyKernel3.git -b ElectroPerf-R-Wifi
 
 	if [ $BUILD_DTBO = 1 ]
 	then
@@ -178,7 +178,7 @@ exports() {
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="ElectroPerf-$LINUXVER-LTO-P-WIFI-X01BD-v2.2-$DATE"
+    KERNELNAME="ElectroPerf-$LINUXVER-LTO-R-WIFI-X01BD-v2.2-$DATE"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
@@ -272,10 +272,10 @@ gen_zip() {
 		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
 	fi
 	cd AnyKernel3 || exit
-	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-LTO-P-WIFI-v2.2/g" init.spectrum.rc
+	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-LTO-R-WIFI-v2.2/g" init.spectrum.rc
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
-	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
+	sed -i "s/kernel.for=.*/kernel.for=R-WIFI/g" anykernel.sh
 	sed -i "s/kernel.compiler=.*/kernel.compiler=EVA-GCC/g" anykernel.sh
 	sed -i "s/kernel.made=.*/kernel.made=Kunmun @ElectroPerf/g" anykernel.sh
 	sed -i "s/kernel.version=.*/kernel.version=$LINUXVER/g" anykernel.sh
