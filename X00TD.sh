@@ -178,7 +178,7 @@ exports() {
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="ElectroPerf-$LINUXVER-LTO-P-WIFI-X00TD-v2.2-$DATE"
+    KERNELNAME="ElectroPerf-$LINUXVER-LTO-P-WIFI-X00TD-v2.3-$DATE"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
@@ -272,7 +272,7 @@ gen_zip() {
 		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
 	fi
 	cd AnyKernel3 || exit
-	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-LTO-P-WIFI-v2.2/g" init.spectrum.rc
+	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-LTO-P-WIFI-v2.3/g" init.spectrum.rc
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
 	sed -i "s/kernel.for=.*/kernel.for=P-WIFI/g" anykernel.sh
