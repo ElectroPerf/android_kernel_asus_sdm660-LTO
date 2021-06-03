@@ -366,7 +366,6 @@ AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage -fno-tree-loop-im
 CFLAGS_KCOV	= -fsanitize-coverage=trace-pc
 
-
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE    := \
 		-I$(srctree)/arch/$(hdr-arch)/include/uapi \
@@ -669,7 +668,13 @@ ifdef CONFIG_LTO_GCC
 LTO_CFLAGS		:= -flto -flto=jobserver -fno-fat-lto-objects \
 				-fuse-linker-plugin -fwhole-program
 ifdef CONFIG_GRAPHITE
-LTO_CFLAGS    += -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block -ftree-vectorize
+LTO_CFLAGS    += -floop-block \
+                 -ftree-vectorize \
+                 -floop-strip-mine \
+                 -floop-interchange \
+                 -fgraphite-identity \
+                 -floop-nest-optimize \
+                 -ftree-loop-distribution
 endif
 KBUILD_CFLAGS	+= $(LTO_CFLAGS)
 LTO_LDFLAGS		:= $(LTO_CFLAGS) -Wno-lto-type-mismatch -Wno-psabi \
@@ -712,23 +717,7 @@ endif
 ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
 KBUILD_CFLAGS  += -O3
 else
-ifdef CONFIG_PROFILE_ALL_BRANCHES
 KBUILD_CFLAGS	+= -O2
-else
-KBUILD_CFLAGS   += -O2
-endif
-endif
-
-ifdef CONFIG_PROFILE_ALL_BRANCHES
-KBUILD_CFLAGS	+= -O2
-else
-ifeq ($(cc-name),gcc)
-KBUILD_CFLAGS   += -O2
-endif
-ifeq ($(cc-name),clang)
-KBUILD_CFLAGS   += -O3
-KBUILD_CFLAGS	+= -mcpu=cortex-a53 -mtune=cortex-a53
-endif
 endif
 
 ifdef CONFIG_CC_WERROR
@@ -736,12 +725,29 @@ KBUILD_CFLAGS	+= -Werror
 endif
 
 ifeq ($(cc-name),clang)
-KBUILD_CFLAGS   += -mcpu=cortex-a53 -mtune=cortex-a53
+ifdef CONFIG_LLVM_POLLY
+POLLY_FLAGS	:= -mllvm -polly \
+		   -mllvm -polly-run-dce \
+		   -mllvm -polly-run-inliner \
+		   -mllvm -polly-opt-fusion=max \
+		   -mllvm -polly-parallel -lgomp \
+		   -mllvm -polly-ast-use-context \
+		   -mllvm -polly-detect-keep-going \
+		   -mllvm -polly-vectorizer=stripmine \
+		   -mllvm -polly-invariant-load-hoisting
+else
+POLLY_FLAGS	:=
+endif
+OPT_FLAGS := -funsafe-math-optimizations -ffast-math -fopenmp \
+               -mcpu=cortex-a53 -mtune=cortex-a53 -march=armv8-a+crc+crypto \
+               $(POLLY_FLAGS)
+else
+OPT_FLAGS := -mcpu=cortex-a73.cortex-a53 -mtune=cortex-a73.cortex-a53 \
+             -march=armv8-a+crc+crypto
 endif
 
-ifeq ($(cc-name),gcc)
-KBUILD_CFLAGS   += -mcpu=cortex-a53 -mtune=cortex-a53
-endif
+KBUILD_CFLAGS += $(OPT_FLAGS)
+KBUILD_AFLAGS += $(OPT_FLAGS)
 
 # Tell gcc to never replace conditional load with a non-conditional one
 KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
