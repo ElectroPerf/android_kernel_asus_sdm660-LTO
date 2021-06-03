@@ -733,8 +733,20 @@ OPT_FLAGS := -funsafe-math-optimizations -ffast-math -fopenmp \
                -mcpu=cortex-a53 -mtune=cortex-a53 -march=armv8-a+crc+crypto \
                $(POLLY_FLAGS)
 else
+ifdef CONFIG_GCC_GRAPHITE
+GRAPHITE_FLAGS    += -floop-block \
+                 -ftree-vectorize \
+                 -floop-strip-mine \
+                 -floop-interchange \
+                 -fgraphite-identity \
+                 -floop-nest-optimize \
+                 -ftree-loop-distribution
+else
+GRAPHITE_FLAGS	:=
+endif
 OPT_FLAGS := -mcpu=cortex-a73.cortex-a53 -mtune=cortex-a73.cortex-a53 \
-             -march=armv8-a+crc+crypto
+             -march=armv8-a+crc+crypto \
+             $(GRAPHITE_FLAGS)
 endif
 
 KBUILD_CFLAGS += $(OPT_FLAGS)
