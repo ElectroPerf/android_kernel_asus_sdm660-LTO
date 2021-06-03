@@ -667,15 +667,6 @@ endif
 ifdef CONFIG_LTO_GCC
 LTO_CFLAGS		:= -flto -flto=jobserver -fno-fat-lto-objects \
 				-fuse-linker-plugin -fwhole-program
-ifdef CONFIG_GRAPHITE
-LTO_CFLAGS    += -floop-block \
-                 -ftree-vectorize \
-                 -floop-strip-mine \
-                 -floop-interchange \
-                 -fgraphite-identity \
-                 -floop-nest-optimize \
-                 -ftree-loop-distribution
-endif
 KBUILD_CFLAGS	+= $(LTO_CFLAGS)
 LTO_LDFLAGS		:= $(LTO_CFLAGS) -Wno-lto-type-mismatch -Wno-psabi \
 				-Wno-stringop-overflow -Wno-stringop-overread \
