@@ -731,9 +731,8 @@ KBUILD_CFLAGS	+= -mcpu=cortex-a53 -mtune=cortex-a53
 endif
 endif
 
-# disable warning: tokens terminating statement expression are separated by whitespace on latest clang 12
-ifeq ($(cc-name),clang)
-KBUILD_CFLAGS	+= $(call cc-disable-warning,compound-token-split-by-space)
+ifdef CONFIG_CC_WERROR
+KBUILD_CFLAGS	+= -Werror
 endif
 
 ifeq ($(cc-name),clang)
