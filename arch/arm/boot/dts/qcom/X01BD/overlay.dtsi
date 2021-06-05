@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 
+#include "sdm660-thermal-overlay.dtsi"
 #include "sdm660-overlay.dtsi"
 #include "sdm660-mdss-overlay.dtsi"
 #include "msm-pm660-overlay.dtsi"
