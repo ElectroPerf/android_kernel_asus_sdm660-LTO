@@ -1,6 +1,6 @@
 # SPECTRUM KERNEL MANAGER
 # Ramdisk file for profile based kernel management
-# Implimentation inspired by Franco's fku profiles
+# Implementation inspired by Franco's fku profiles
 # Fully revised by @ElectroPerf
 
 # Initialization
@@ -55,13 +55,13 @@ on property:persist.spectrum.profile=2
     restorecon -R /sys/devices/system/cpu ## must restore after conservative
     ## Little min freq
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
-    write /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq "300000"
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq "633600"
     ## Little max freq
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
     write /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq "1536000"
     ## Little min info
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_min_freq
-    write /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_min_freq "300000"
+    write /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_min_freq "633600"
     ## Little max info
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_max_freq
     write /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_max_freq "1536000"
@@ -79,13 +79,13 @@ on property:persist.spectrum.profile=2
     restorecon -R /sys/devices/system/cpu ## must restore after conservative
     ## Big min freq
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq
-    write /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq "300000"
+    write /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq "633600"
     ## Big max freq
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq
     write /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq "1113600"
     ## Big min info
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_min_freq
-    write /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_min_freq "300000"
+    write /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_min_freq "633600"
     ## Big max info
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq
     write /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq "1113600"
@@ -120,6 +120,8 @@ on property:persist.spectrum.profile=2
     chmod 0644 /sys/module/msm_thermal/VDD_RESTRICTION/enabled
     chown system system /sys/module/msm_thermal/VDD_RESTRICTION/enabled
     write /sys/module/msm_thermal/VDD_RESTRICTION/enabled 0
+	# Power Efficient Eorkqueues
+    write /sys/module/workqueue/parameters/power_efficient "Y"
 
 # balance
 on property:persist.spectrum.profile=0
@@ -129,21 +131,21 @@ on property:persist.spectrum.profile=0
     restorecon -R /sys/devices/system/cpu ## must restore after interactive
     ## Little min freq
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
-    write /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq "300000"
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq "633600"
     ## Little max freq
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
     write /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq "1843200"
     ## Little min info
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_min_freq
-    write /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_min_freq "300000"
+    write /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_min_freq "633600"
     ## Little max info
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_max_freq
     write /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_max_freq "1843200"
     ## Little gov Setting
     chown system system /sys/devices/system/cpu/cpufreq/policy0/interactive/*
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy0/interactive/*
-    write /sys/devices/system/cpu/cpufreq/policy0/interactive/target_loads "70 300000:43 633600:63 902400:73 1113600:76 1401600:82 1536000:84 1747200:85 1843200:99"
-    write /sys/devices/system/cpu/cpufreq/policy0/interactive/above_hispeed_delay "0 300000:50000 633600:60000 902400:75000 1401600:80000 1747200:100000 1843200:150000"
+    write /sys/devices/system/cpu/cpufreq/policy0/interactive/target_loads "70 633600:43 633600:63 902400:73 1113600:76 1401600:82 1536000:84 1747200:85 1843200:99"
+    write /sys/devices/system/cpu/cpufreq/policy0/interactive/above_hispeed_delay "0 633600:50000 633600:60000 902400:75000 1401600:80000 1747200:100000 1843200:150000"
     write /sys/devices/system/cpu/cpufreq/policy0/interactive/hispeed_freq 902400
     write /sys/devices/system/cpu/cpufreq/policy0/interactive/go_hispeed_load 65
     write /sys/devices/system/cpu/cpufreq/policy0/interactive/align_windows 1
@@ -155,21 +157,21 @@ on property:persist.spectrum.profile=0
     restorecon -R /sys/devices/system/cpu ## must restore after interactive
     ## Big min freq
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq
-    write /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq "300000"
+    write /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq "633600"
     ## Big max freq
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq
     write /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq "2208000"
     ## Big min info
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_min_freq
-    write /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_min_freq "300000"
+    write /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_min_freq "633600"
     ## Big max info
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq
     write /sys/devices/system/cpu/cpufreq/policy4/cpuinfo_max_freq "2208000"
     ## Big gov Setting
     chown system system /sys/devices/system/cpu/cpufreq/policy4/interactive/*
     chmod 0644 /sys/devices/system/cpu/cpufreq/policy4/interactive/*
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/target_loads "90 300000:43 633600:62 921600:74 1113600:76 1401600:78 1747200:80 1958400:82 2150400:83 2208000:99"
-    write /sys/devices/system/cpu/cpufreq/policy4/interactive/above_hispeed_delay "32000 300000:50000 633600:60000 921600:75000 1401600:80000 2150400:100000 2208000:150000"
+    write /sys/devices/system/cpu/cpufreq/policy4/interactive/target_loads "90 633600:43 633600:62 921600:74 1113600:76 1401600:78 1747200:80 1958400:82 2150400:83 2208000:99"
+    write /sys/devices/system/cpu/cpufreq/policy4/interactive/above_hispeed_delay "32000 633600:50000 633600:60000 921600:75000 1401600:80000 2150400:100000 2208000:150000"
     write /sys/devices/system/cpu/cpufreq/policy4/interactive/hispeed_freq 1401600
     write /sys/devices/system/cpu/cpufreq/policy4/interactive/go_hispeed_load 85
     write /sys/devices/system/cpu/cpufreq/policy4/interactive/align_windows 1
@@ -196,13 +198,15 @@ on property:persist.spectrum.profile=0
     #thermal
     chmod 0644 /sys/module/msm_thermal/core_control/enabled
     chown system system /sys/module/msm_thermal/core_control/enabled
-    write /sys/module/msm_thermal/core_control/enabled 0
+    write /sys/module/msm_thermal/core_control/enabled 1
     chmod 0644 /sys/module/msm_thermal/parameters/enabled 
     chown system system /sys/module/msm_thermal/parameters/enabled 
-    write /sys/module/msm_thermal/parameters/enabled N
+    write /sys/module/msm_thermal/parameters/enabled Y
     chmod 0644 /sys/module/msm_thermal/VDD_RESTRICTION/enabled
     chown system system /sys/module/msm_thermal/VDD_RESTRICTION/enabled
     write /sys/module/msm_thermal/VDD_RESTRICTION/enabled 0
+	# Power Efficient Eorkqueues
+    write /sys/module/workqueue/parameters/power_efficient "Y"
 
 # Gaming
 on property:persist.spectrum.profile=3
@@ -281,6 +285,8 @@ on property:persist.spectrum.profile=3
     chmod 0644 /sys/module/msm_thermal/VDD_RESTRICTION/enabled
     chown system system /sys/module/msm_thermal/VDD_RESTRICTION/enabled
     write /sys/module/msm_thermal/VDD_RESTRICTION/enabled 0
+	# Power Efficient Eorkqueues
+    write /sys/module/workqueue/parameters/power_efficient "N"
 
 on property:persist.spectrum.profile=1
     ## Little gov
@@ -338,4 +344,5 @@ on property:persist.spectrum.profile=1
     chmod 0644 /sys/module/msm_thermal/VDD_RESTRICTION/enabled
     chown system system /sys/module/msm_thermal/VDD_RESTRICTION/enabled
     write /sys/module/msm_thermal/VDD_RESTRICTION/enabled 0
-    
+	# Power Efficient Eorkqueues
+    write /sys/module/workqueue/parameters/power_efficient "N"
