@@ -19,7 +19,7 @@ ifeq ($(CONFIG_RELOCATABLE), y)
 # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
 # for relative relocs, since this leads to better Image compression
 # with the relocation offsets always being zero.
-LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext -z norelro \
+LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext \
 			$(call ld-option, --no-apply-dynamic-relocs)
 endif
 
@@ -83,11 +83,20 @@ KBUILD_AFLAGS	+= $(lseinstr) $(vdso32)
 ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
 KBUILD_CPPFLAGS	+= -mbig-endian
 AS		+= -EB
-LD		+= -EB
+# Prefer the baremetal ELF build target, but not all toolchains include
+# it so fall back to the standard linux version if needed.
+LDFLAGS		+= -EB $(call ld-option, -maarch64elfb, -maarch64linuxb -z norelro)
+UTS_MACHINE	:= aarch64_be
 else
 KBUILD_CPPFLAGS	+= -mlittle-endian
 AS		+= -EL
-LD		+= -EL
+# Same as above, prefer ELF but fall back to linux target if needed.
+LDFLAGS		+= -EL $(call ld-option, -maarch64elf, -maarch64linux -z norelro)
+UTS_MACHINE	:= aarch64
+endif
+
+ifeq ($(ld-name),lld)
+KBUILD_LDFLAGS	+= -z norelro
 endif
 
 CHECKFLAGS	+= -D__aarch64__
