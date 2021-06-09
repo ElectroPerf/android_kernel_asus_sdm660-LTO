@@ -1,0 +1,71 @@
+## Build Information
+```
+Kernel: NetErnels
+Type: Stable
+Device: Asus ZenFone Max Pro M1
+Compiler: Proton Clang 13.0.0
+Branch: main
+Build Number: 2.2.2
+```
+## Changelog
+```
+-2.2.2:
+    USB On The Go support (USB OTG)
+    Update Wifi Injection Patch to v2-2-6-mac80211-refactor
+
+
+-2.2.1:
+    System V IPC
+    Loadable module support
+    Module unloading
+    Forced module unloading
+    Module versioning support
+    HCI USB driver
+    Broadcom protocol support
+    Realtek protocol support
+    HCI UART driver
+    HCI BCM203x USB driver
+    HCI BPA10x USB driver
+    HCI BlueFRITZ! USB driver
+    cfg80211 wireless extensions compatibility
+    Generic IEEE 802.11 Networking Stack (mac80211)
+    mac80211 mesh networking (pre-802.11s) support
+    USB RTL8150 based ethernet device support
+    Realtek RTL8152/RTL8153 Based USB Ethernet Adapters
+    USB Modem (CDC ACM) support
+    Generic serial bulk in/out
+    Abstract Control Model (CDC ACM)
+    Object Exchange Model (CDC OBEX)
+    Network Control Model (CDC NCM)
+    Ethernet Control Model (CDC ECM)
+    Ethernet Control Model (CDC ECM) subset
+    Ethernet Emulation Model (EEM)
+    Atheros/Qualcomm devices
+    Linux Community AR9170 802.11n USB support
+    Atheros mobile chipsets support
+    Atheros ath6kl USB support
+    MediaTek devices
+    MediaTek MT7601U (USB) support
+    Ralink devices
+    Ralink driver support
+    Ralink rt2500 (USB) support
+    Ralink rt2501/rt73 (USB)
+    Ralink rt27xx/rt28xx/rt30xx (USB)
+    rt2800usb - Include support for rt33xx devices
+    rt2800usb - Include support for rt35xx devices
+    rt2800usb - Include support for rt3573 devices
+    rt2800usb - Include support for rt53xx devices
+    rt2800usb - Include support for rt55xx devices
+    rt2800usb - Include support for unknown (USB)
+    Realtek devices
+    Realtek 8187 and 8187B USB support
+    Realtek rtlwifi family of devices
+    RTL8723AU/RTL8188[CR]U/RTL819[12]CU (mac80211) support
+    Include support for untested Realtek 8xxx USB devices
+    Wireless RNDIS USB support
+    RTL8187 Master Mode (AP) ⚠️
+    Enabled all cgroups and namespaces
+    Atheros HTC based wireless card support
+    USB ZD1201 based wireless device support
+    ZyDAS ZD1211/ZD1211B USB-wireless support
+```
