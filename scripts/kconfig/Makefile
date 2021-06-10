@@ -19,23 +19,23 @@ endif
 unexport CONFIG_
 
 xconfig: $(obj)/qconf
-	$< $(silent) $(Kconfig)
+	$(Q)$< $(silent) $(Kconfig)
 
 gconfig: $(obj)/gconf
-	$< $(silent) $(Kconfig)
+	$(Q)$< $(silent) $(Kconfig)
 
 menuconfig: $(obj)/mconf
-	$< $(silent) $(Kconfig)
+	$(Q)$< $(silent) $(Kconfig)
 
 config: $(obj)/conf
-	$< $(silent) --oldaskconfig $(Kconfig)
+	$(Q)$< $(silent) --oldaskconfig $(Kconfig)
 
 nconfig: $(obj)/nconf
-	$< $(silent) $(Kconfig)
+	$(Q)$< $(silent) $(Kconfig)
 
 silentoldconfig: $(obj)/conf
 	$(Q)mkdir -p include/config include/generated
-	$< $(silent) --$@ $(Kconfig)
+	$(Q)$< $(silent) --$@ $(Kconfig)
 
 localyesconfig localmodconfig: $(obj)/streamline_config.pl $(obj)/conf
 	$(Q)mkdir -p include/config include/generated
@@ -81,7 +81,7 @@ simple-targets := oldconfig allnoconfig allyesconfig allmodconfig \
 PHONY += $(simple-targets)
 
 $(simple-targets): $(obj)/conf
-	$< $(silent) --$@ $(Kconfig)
+	$(Q)$< $(silent) --$@ $(Kconfig)
 
 PHONY += oldnoconfig savedefconfig defconfig
 
@@ -91,7 +91,7 @@ PHONY += oldnoconfig savedefconfig defconfig
 oldnoconfig: olddefconfig
 
 savedefconfig: $(obj)/conf
-	$< $(silent) --$@=defconfig $(Kconfig)
+	$(Q)$< $(silent) --$@=defconfig $(Kconfig)
 
 defconfig: $(obj)/conf
 ifeq ($(KBUILD_DEFCONFIG),)
