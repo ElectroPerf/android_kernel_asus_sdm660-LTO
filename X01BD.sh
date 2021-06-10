@@ -283,7 +283,7 @@ gen_zip() {
 	sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
 
 
-	zip -r9 "$ZIPNAME" * -x .git README.md anykernel-real.sh .gitignore *.zip
+	zip -r9 "$ZIPNAME" * -x .git README.md anykernel-real.sh .gitignore zipsigner* *.zip
 
 	## Prepare a final zip variable
 	ZIP_FINAL="$ZIPNAME"
