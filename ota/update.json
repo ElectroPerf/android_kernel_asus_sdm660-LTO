@@ -1,11 +1,11 @@
 {
   "kernel": {
     "name": "NetErnels Kernel",
-    "version": "NetErnels-v2.2.2",
-    "link": "https://github.com/Neternels/android_kernel_asus_sdm660-LTO/releases/download/v2.2.2/NetErnels-X00TD-4.4.269-2021-05-26-signed.zip",
+    "version": "NetErnels-v2.3",
+    "link": "https://github.com/Neternels/android_kernel_asus_sdm660-LTO/releases/download/v2.3/NetErnels-X00TD-4.4.271-2021-06-11-signed.zip",
     "changelog_url": "https://raw.githubusercontent.com/Neternels/android_kernel_asus_sdm660-LTO/main/ota/changelog",
-    "date": "2021-05-26",
-    "sha1": "d36d8b3bf7109313690125949743f31b44a978b6"
+    "date": "2021-06-11",
+    "sha1": "76c9073ca6e14fc00db995ddd42562b185acd1a1"
   },
   "support": {
     "link": "https://t.me/neternels_chat"
