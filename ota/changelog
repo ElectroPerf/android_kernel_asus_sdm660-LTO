@@ -3,9 +3,9 @@
 Kernel: NetErnels
 Type: Stable
 Device: Asus ZenFone Max Pro M1
-Compiler: Proton Clang 13.0.0
+Compiler: GCC
 Branch: main
-Build Number: 2.2.2
+Build Number: 2.3
 ```
 ## Changelog
 ```
@@ -68,4 +68,15 @@ Build Number: 2.2.2
     Atheros HTC based wireless card support
     USB ZD1201 based wireless device support
     ZyDAS ZD1211/ZD1211B USB-wireless support
+
+-v2.3:
+    Enable some LTO optimised configs.
+    Fixed bug with CPU freq. drop to 300Mhz causing random lags.
+    Add support for some file systems like sdfat, texfat, ntfs,etc...
+    Turned on debugging.
+    Switched to MSM Performance
+    Introduce Simple Thermal.
+    Fixed audio Craklings.
+    Adressed some memory leaks.
+    Realtek RTL88xxau drivers
 ```
