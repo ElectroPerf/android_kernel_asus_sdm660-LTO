@@ -40,7 +40,8 @@ cdir() {
 ##----------Basic Informations, COMPULSORY--------------##
 
 # The defult directory where the kernel should be placed
-KERNEL_DIR=$PWD
+KERNEL_DIR=$HOME/Kernel
+cd $KERNEL_DIR
 
 # The name of the device for which the kernel is built
 MODEL="Asus Zenfone Max Pro M2"
@@ -64,11 +65,6 @@ BUILD_TYPE="TEST: Might be unstable so use at your own risk"
 # Specify compiler.
 # 'clang' or 'clangxgcc' or 'gcc'
 COMPILER=gcc
-	if [ $COMPILER = "clang" ] || [ $COMPILER = "clangxgcc" ]
-	then
-		# install few necessary packages
-		sudo apt-get -y install gcc llvm lld g++-multilib clang
-	fi
 
 # Kernel is LTO
 LTO=1
@@ -117,7 +113,7 @@ SILENCE=0
 
 # Debug purpose. Send logs on every successfull builds
 # 1 is YES | 0 is NO(default)
-LOG_DEBUG=1
+LOG_DEBUG=0
 
 ##------------------------------------------------------##
 ##---------Do Not Touch Anything Beyond This------------##
@@ -126,6 +122,7 @@ LOG_DEBUG=1
 # set KBUILD_BUILD_VERSION and KBUILD_BUILD_HOST and CI_BRANCH
 
 ## Set defaults first
+CI=DRONE
 DISTRO=$(cat /etc/issue)
 KBUILD_BUILD_HOST=$(uname -a | awk '{print $2}')
 CI_BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -133,25 +130,20 @@ TERM=xterm
 export KBUILD_BUILD_HOST CI_BRANCH TERM
 
 ## Check for CI
-if [ "$CI" ]
-then
-	if [ "$CIRCLECI" ]
+	if [ $CI = "CIRCLECI" ]
 	then
 		export KBUILD_BUILD_VERSION=$CIRCLE_BUILD_NUM
 		export KBUILD_BUILD_HOST="CircleCI"
 		export CI_BRANCH=$CIRCLE_BRANCH
-	fi
-	if [ "$DRONE" ]
+	
+	elif [ $CI = "DRONE" ]
 	then
 		export KBUILD_BUILD_VERSION=$DRONE_BUILD_NUMBER
 		export KBUILD_BUILD_HOST=$DRONE_SYSTEM_HOST
 		export CI_BRANCH=$DRONE_BRANCH
 		export BASEDIR=$DRONE_REPO_NAME # overriding
-		export SERVER_URL="${DRONE_SYSTEM_PROTO}://${DRONE_SYSTEM_HOSTNAME}/${AUTHOR}/${BASEDIR}/${KBUILD_BUILD_VERSION}"
-	else
-		echo "Not presetting Build Version"
+		export SERVER_URL="https://cloud.drone.io/ElectroPerf/${DRONE_REPO_NAME}/${KBUILD_BUILD_VERSION}/1/2"
 	fi
-fi
 
 #Check Kernel Version
 LINUXVER=$(make kernelversion)
@@ -169,22 +161,22 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 	if [ $COMPILER = "clang" ]
 	then
 		msg "|| Cloning toolchain ||"
-		git clone --depth=1 https://github.com/kdrag0n/proton-clang clang
+		git clone --depth=1 https://github.com/kdrag0n/proton-clang -b master $KERNEL_DIR/clang
 
 	elif [ $COMPILER = "gcc" ]
 	then
 		msg "|| Cloning GCC 12.0.0 Bare Metal ||"
-		git clone https://github.com/mvaisakh/gcc-arm64.git gcc64 --depth=1
-                git clone https://github.com/mvaisakh/gcc-arm.git gcc32 --depth=1
+		git clone https://github.com/mvaisakh/gcc-arm64.git $KERNEL_DIR/gcc64 --depth=1
+                git clone https://github.com/mvaisakh/gcc-arm.git $KERNEL_DIR/gcc32 --depth=1
 
 	elif [ $COMPILER = "clangxgcc" ]
 	then
 		msg "|| Cloning toolchain ||"
-		git clone --depth=1 https://github.com/kdrag0n/proton-clang -b master clang
+		git clone --depth=1 https://github.com/kdrag0n/proton-clang -b master $KERNEL_DIR/clang
 
 		msg "|| Cloning GCC 12.0.0 Bare Metal ||"
-		git clone https://github.com/mvaisakh/gcc-arm64.git gcc64 --depth=1
-		git clone https://github.com/mvaisakh/gcc-arm.git gcc32 --depth=1
+		git clone https://github.com/mvaisakh/gcc-arm64.git $KERNEL_DIR/gcc64 --depth=1
+		git clone https://github.com/mvaisakh/gcc-arm.git $KERNEL_DIR/gcc32 --depth=1
 	fi
 
 	# Toolchain Directory defaults to clang-llvm
@@ -194,13 +186,16 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 		GCC64_DIR=$KERNEL_DIR/gcc64
 		GCC32_DIR=$KERNEL_DIR/gcc32
 
+	# AnyKernel Directory
+		AK_DIR=$KERNEL_DIR/Anykernel3
+
 	msg "|| Cloning Anykernel ||"
-        git clone https://github.com/ElectroPerf/AnyKernel3.git -b ElectroPerf-P-Wifi
+        git clone https://github.com/ElectroPerf/AnyKernel3.git -b ElectroPerf-P-Wifi $KERNEL_DIR/Anykernel3
 
 	if [ $BUILD_DTBO = 1 ]
 	then
 		msg "|| Cloning libufdt ||"
-		git clone https://android.googlesource.com/platform/system/libufdt "$KERNEL_DIR"/scripts/ufdt/libufdt
+		git clone https://android.googlesource.com/platform/system/libufdt $KERNEL_DIR/scripts/ufdt/libufdt
 	fi
 }
 
@@ -242,12 +237,12 @@ exports() {
 	fi
 
 	export PATH KBUILD_COMPILER_STRING
-	PROCS=$(nproc --all)
+	PROCS=$(nproc)
 	export PROCS
 
 	BOT_MSG_URL="https://api.telegram.org/bot$TOKEN/sendMessage"
 	BOT_BUILD_URL="https://api.telegram.org/bot$TOKEN/sendDocument"
-	PROCS=$(nproc --all)
+	PROCS=$(nproc)
 
     if [ -e $GCC64_DIR/bin/aarch64-elf-gcc ];then
         gcc64Type="$($GCC64_DIR/bin/aarch64-elf-gcc --version | head -n 1)"
@@ -304,7 +299,7 @@ tg_send_sticker() {
 ##----------------------------------------------------------------##
 
 tg_send_files(){
-    KernelFiles="$KERNEL_DIR/AnyKernel3/$ZIP_RELEASE.zip"
+    KernelFiles="$(pwd)/$KERNELNAME-signed.zip"
 	MD5CHECK=$(md5sum "$KernelFiles" | cut -d' ' -f1)
 	SID="CAACAgUAAxkBAAIlv2DEzB-BSFWNyXkkz1NNNOp_pm2nAAIaAgACXGo4VcNVF3RY1YS8HwQ"
 	STICK="CAACAgUAAxkBAAIlwGDEzB_igWdjj3WLj1IPro2ONbYUAAIrAgACHcUZVo23oC09VtdaHwQ"
@@ -318,7 +313,7 @@ tg_send_files(){
 - <code>$MD5CHECK</code>
 
 <b>Zip Name</b>
-- <code>$ZIP_RELEASE</code>"
+- <code>$KERNELNAME-signed.zip</code>"
 
         curl --progress-bar -F document=@"$KernelFiles" "https://api.telegram.org/bot$TOKEN/sendDocument" \
         -F chat_id="$CHATID"  \
@@ -344,17 +339,21 @@ build_kernel() {
 
 <b>Docker OS: </b><code>$DISTRO</code>
 
+<b>Build Host: </b><code>$KBUILD_BUILD_HOST</code>
+
 <b>Host Core Count : </b><code>$PROCS</code>
 
-<b>Device: $MODEL</b>
+<b>Device: </b><code>$MODEL</code>
 
-<b>Codename: $DEVICE</b>
+<b>Codename: </b><code>$DEVICE</code>
 
-<b>Build Date: $DATE </b>
+<b>Build Date: </b><code>$DATE</code>
 
-<b>Kernel Name: ElectroPerf-LTO-$VARIANT-$DEVICE-v2.3</b>
+<b>Kernel Name: </b><code>ElectroPerf-LTO-$VARIANT-$DEVICE-v2.3</code>
 
-<b>Linux Tag Version: $LINUXVER</b>
+<b>Linux Tag Version: </b><code>$LINUXVER</code>
+
+<b>ElectroPerf Build Progress: </b><a href='$SERVER_URL'> Check Here </a>
 
 <b>Builder Info: </b>
 
@@ -398,6 +397,7 @@ build_kernel() {
 				AR=llvm-ar \
 				OBJDUMP=llvm-objdump \
 				STRIP=llvm-strip "${MAKE[@]}" 2>&1 | tee build.log
+
 	elif [ $COMPILER = "gcc" ]
 	then
 		make -j"$PROCS" O=out \
@@ -405,7 +405,8 @@ build_kernel() {
 				CROSS_COMPILE=aarch64-elf- \
 				AR=aarch64-elf-ar \
 				OBJDUMP=aarch64-elf-objdump \
-				STRIP=aarch64-elf-strip "${MAKE[@]}" 2>&1 | tee build.log
+				STRIP=aarch64-elf-strip
+
 	elif [ $COMPILER = "clangxgcc" ]
 	then
 		make -j"$PROCS"  O=out \
@@ -429,7 +430,7 @@ build_kernel() {
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-		if [ -f "$KERNEL_DIR"/out/arch/arm64/boot/$FILES ]
+		if [ -f $KERNEL_DIR/out/arch/arm64/boot/$FILES ]
 		then
 			msg "|| Kernel successfully compiled ||"
 			if [ $BUILD_DTBO = 1 ]
@@ -443,7 +444,23 @@ build_kernel() {
 			else
 			if [ "$PTTG" = 1 ]
  			then
-				tg_post_build "build.log" "<b>Build failed to compile after $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds</b>"
+				tg_post_msg "<b>❌Error! Compilaton failed: Kernel Image missing</b>
+
+<b>Build Date: </b><code>$DATE</code>
+
+<b>Kernel Name: </b><code>ElectroPerf-LTO-$VARIANT-$DEVICE-v2.3</code>
+
+<b>Linux Tag Version: </b><code>$LINUXVER</code>
+
+<b>ElectroPerf Build Failure Logs: </b><a href='$SERVER_URL'> Check Here </a>
+
+<b>Time Taken: </b><code>$((DIFF / 60)) minute(s) $((DIFF % 60)) second(s)</code>
+
+<b>Sed Loif Lmao</b>"
+
+				tg_send_sticker "CAACAgUAAxkBAAIl1WDE8FQjVXrayorUvfFq4A7Uv9FwAAKaAgAChYYpVutaTPLAAra3HwQ"
+
+				exit -1
 			fi
 		fi
 
@@ -453,12 +470,12 @@ build_kernel() {
 
 gen_zip() {
 	msg "|| Zipping into a flashable zip ||"
-	mv "$KERNEL_DIR"/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/Image.gz-dtb
+	mv "$KERNEL_DIR"/out/arch/arm64/boot/Image.gz-dtb $AK_DIR/Image.gz-dtb
 	if [ $BUILD_DTBO = 1 ]
 	then
-		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img AnyKernel3/dtbo.img
+		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img $AK_DIR/dtbo.img
 	fi
-	cd AnyKernel3 || exit
+	cd $AK_DIR
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
 	sed -i "s/kernel.for=.*/kernel.for=$VARIANT/g" anykernel.sh
@@ -468,11 +485,8 @@ gen_zip() {
 	sed -i "s/message.word=.*/message.word=Appreciate your efforts for choosing ElectroPerf kernel./g" anykernel.sh
 	sed -i "s/build.date=.*/build.date=$DATE/g" anykernel.sh
 
-
-	zip -r9 "$ZIPNAME" * -x .git README.md anykernel-real.sh .gitignore zipsigner* *.zip
-
-	## Prepare a final zip variable
-	ZIP_FINAL="$ZIPNAME"
+	cd $AK_DIR
+	zip -r9 "$KERNELNAME.zip" * -x .git README.md anykernel-real.sh .gitignore zipsigner* *.zip
 
 	if [ $SIGN = 1 ]
 	then
@@ -482,25 +496,19 @@ gen_zip() {
  			msg "|| Signing Zip ||"
 			tg_post_msg "<code>Signing Zip file with AOSP keys..</code>"
  		fi
-		java -jar zipsigner-3.0.jar "$KERNELNAME".zip "$KERNELNAME"-signed.zip
-		ZIP_RELEASE="$KERNELNAME-signed"
+		cd $AK_DIR
+		java -jar zipsigner-3.0.jar $KERNELNAME.zip $KERNELNAME-signed.zip
 	fi
 
 	if [ "$PTTG" = 1 ]
  	then
 		tg_send_files "$1"
 	fi
-	cd ..
 }
 
 setversioning
 clone
 exports
 build_kernel
-if [ $LOG_DEBUG = "1" ]
-then
-	tg_post_build "build.log" "$CHATID" "<b>Build failed to compile after $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds</b>"
-	tg_send_sticker "CAACAgUAAxkBAAIl1WDE8FQjVXrayorUvfFq4A7Uv9FwAAKaAgAChYYpVutaTPLAAra3HwQ"
-fi
 
 ##----------------*****-----------------------------##
