@@ -96,7 +96,7 @@ BUILD_DTBO=0
 
 # Sign the zipfile
 # 1 is YES | 0 is NO
-SIGN=1
+SIGN=0
 	if [ $SIGN = 1 ]
 	then
 		#Check for java
@@ -299,7 +299,7 @@ tg_send_sticker() {
 ##----------------------------------------------------------------##
 
 tg_send_files(){
-    KernelFiles="$(pwd)/$KERNELNAME-signed.zip"
+    KernelFiles="$(pwd)/$KERNELNAME.zip"
 	MD5CHECK=$(md5sum "$KernelFiles" | cut -d' ' -f1)
 	SID="CAACAgUAAxkBAAIlv2DEzB-BSFWNyXkkz1NNNOp_pm2nAAIaAgACXGo4VcNVF3RY1YS8HwQ"
 	STICK="CAACAgUAAxkBAAIlwGDEzB_igWdjj3WLj1IPro2ONbYUAAIrAgACHcUZVo23oC09VtdaHwQ"
@@ -313,7 +313,7 @@ tg_send_files(){
 - <code>$MD5CHECK</code>
 
 <b>Zip Name</b>
-- <code>$KERNELNAME-signed.zip</code>"
+- <code>$KERNELNAME.zip</code>"
 
         curl --progress-bar -F document=@"$KernelFiles" "https://api.telegram.org/bot$TOKEN/sendDocument" \
         -F chat_id="$CHATID"  \
