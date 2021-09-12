@@ -81,7 +81,7 @@ PTTG=1
 	if [ $PTTG = 1 ]
 	then
 		# Set Telegram Chat ID
-		CHATID="-1001599776363"
+		CHATID="-1001158889781"
 	fi
 
 # Generate a full DEFCONFIG prior building. 1 is YES | 0 is NO(default)
@@ -163,20 +163,20 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 		msg "|| Cloning toolchain ||"
 		git clone --depth=1 https://github.com/kdrag0n/proton-clang -b master $KERNEL_DIR/clang
 
-	elif [ $COMPILER = "gcc" ]
+	elif [ $COMPILER = "clangxgcc" ]
 	then
 		msg "|| Cloning GCC 12.0.0 Bare Metal ||"
 		git clone https://github.com/mvaisakh/gcc-arm64.git $KERNEL_DIR/gcc64 --depth=1
                 git clone https://github.com/mvaisakh/gcc-arm.git $KERNEL_DIR/gcc32 --depth=1
 
-	elif [ $COMPILER = "clangxgcc" ]
+	elif [ $COMPILER = "gcc" ]
 	then
 		msg "|| Cloning toolchain ||"
-		git clone --depth=1 https://github.com/kdrag0n/proton-clang -b master $KERNEL_DIR/clang
+		git clone --depth=1 https://gitlab.com/ElectroPerf/atom-x-clang.git $KERNEL_DIR/clang
 
-		msg "|| Cloning GCC 12.0.0 Bare Metal ||"
-		git clone https://github.com/mvaisakh/gcc-arm64.git $KERNEL_DIR/gcc64 --depth=1
-		git clone https://github.com/mvaisakh/gcc-arm.git $KERNEL_DIR/gcc32 --depth=1
+		msg "|| Cloning GCC Bare Metal ||"
+		git clone https://github.com/mvaisakh/gcc-arm64.git -b gcc-new $KERNEL_DIR/gcc64 --depth=1
+		git clone https://github.com/mvaisakh/gcc-arm.git -b gcc-new $KERNEL_DIR/gcc32 --depth=1
 	fi
 
 	# Toolchain Directory defaults to clang-llvm
@@ -405,7 +405,8 @@ build_kernel() {
 				CROSS_COMPILE=aarch64-elf- \
 				AR=aarch64-elf-ar \
 				OBJDUMP=aarch64-elf-objdump \
-				STRIP=aarch64-elf-strip
+				STRIP=aarch64-elf-strip  \
+				LD="ld.lld"
 
 	elif [ $COMPILER = "clangxgcc" ]
 	then
