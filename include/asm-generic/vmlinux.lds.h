@@ -466,8 +466,9 @@
 		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely)	\
 		*(.text..ftrace)					\
 		*(.ref.text)						\
-	MEM_KEEP(init.text*)					\
-	MEM_KEEP(exit.text*)					\
+		*(.text.asan.* .text.tsan.*)				\
+	MEM_KEEP(init.text)						\
+	MEM_KEEP(exit.text)						\
 
 
 /* sched.text is aling to function alignment to secure we have same
