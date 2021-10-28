@@ -190,7 +190,7 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 		AK_DIR=$KERNEL_DIR/Anykernel3
 
 	msg "|| Cloning Anykernel ||"
-        git clone https://github.com/ElectroPerf/AnyKernel3.git -b ElectroPerf-P-Wifi $KERNEL_DIR/Anykernel3
+        git clone https://github.com/ElectroPerf/AnyKernel3-X01BD.git -b ElectroPerf-P-Wifi $KERNEL_DIR/Anykernel3
 
 	if [ $BUILD_DTBO = 1 ]
 	then
