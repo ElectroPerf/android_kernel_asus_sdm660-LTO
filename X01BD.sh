@@ -204,7 +204,7 @@ DATE=$(TZ=Asia/Kolkata date +"%Y-%m-%d")
 # Function to replace defconfig versioning
 setversioning() {
     # For staging branch
-    KERNELNAME="ElectroPerf-$LINUXVER-LTO-$VARIANT-X01BD-v2.3-$(TZ=Asia/Kolkata date +"%Y-%m-%d-%s")"
+    KERNELNAME="ElectroPerf-$LINUXVER-LTO-$VARIANT-X01BD-$(TZ=Asia/Kolkata date +"%Y-%m-%d-%s")"
     # Export our new localversion and zipnames
     export KERNELNAME
     export ZIPNAME="$KERNELNAME.zip"
@@ -349,7 +349,7 @@ build_kernel() {
 
 <b>Build Date: </b><code>$DATE</code>
 
-<b>Kernel Name: </b><code>ElectroPerf-LTO-$VARIANT-$DEVICE-v2.3</code>
+<b>Kernel Name: </b><code>ElectroPerf-LTO-$VARIANT-$DEVICE</code>
 
 <b>Linux Tag Version: </b><code>$LINUXVER</code>
 
@@ -449,7 +449,7 @@ build_kernel() {
 
 <b>Build Date: </b><code>$DATE</code>
 
-<b>Kernel Name: </b><code>ElectroPerf-LTO-$VARIANT-$DEVICE-v2.3</code>
+<b>Kernel Name: </b><code>ElectroPerf-LTO-$VARIANT-$DEVICE</code>
 
 <b>Linux Tag Version: </b><code>$LINUXVER</code>
 
@@ -477,7 +477,7 @@ gen_zip() {
 		mv "$KERNEL_DIR"/out/arch/arm64/boot/dtbo.img $AK_DIR/dtbo.img
 	fi
 	cd $AK_DIR
-	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-LTO-$VARIANT-v2.3/g" init.spectrum.rc
+	cp -af "$KERNEL_DIR"/init.ElectroSpectrum.rc init.spectrum.rc && sed -i "s/persist.spectrum.kernel.*/persist.spectrum.kernel ElectroPerf-LTO-$VARIANT/g" init.spectrum.rc
         cp -af anykernel-real.sh anykernel.sh
 	sed -i "s/kernel.string=.*/kernel.string=ElectroPerf-R-CAF-STABLE/g" anykernel.sh
 	sed -i "s/kernel.for=.*/kernel.for=$VARIANT/g" anykernel.sh
