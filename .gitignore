@@ -33,6 +33,10 @@
 *.lzo
 *.patch
 *.gcno
+clang
+gcc*
+out
+Any*
 *.ll
 modules.builtin
 Module.symvers
